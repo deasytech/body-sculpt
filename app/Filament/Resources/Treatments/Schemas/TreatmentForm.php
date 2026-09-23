@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Filament\Resources\Treatments\Schemas;
+
+use App\Filament\Support\MoneyInput;
+use App\Models\ServiceCategory;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Str;
+
+class TreatmentForm
+{
+    public static function configure(Schema $schema): Schema
+    {
+        return $schema
+            ->columns(1)
+            ->components([
+                Grid::make()
+                    ->columns(['default' => 1, 'lg' => 3])
+                    ->columnSpanFull()
+                    ->schema([
+                        Group::make()
+                            ->columnSpan(['lg' => 2])
+                            ->schema([
+                                Section::make('Treatment Details')
+                                    ->description('The name, category and pricing shown on the wellness menu.')
+                                    ->icon(Heroicon::OutlinedSparkles)
+                                    ->schema([
+                                        Select::make('service_category_id')
+                                            ->label('Category')
+                                            ->options(ServiceCategory::query()->pluck('name', 'id'))
+                                            ->searchable()
+                                            ->required(),
+                                        TextInput::make('name')
+                                            ->required()
+                                            ->live(onBlur: true)
+                                            ->afterStateUpdated(fn ($state, $set) => $set('slug', Str::slug($state))),
+                                        TextInput::make('slug')
+                                            ->required()
+                                            ->unique(ignoreRecord: true)
+                                            ->helperText('Used in the treatment page URL.'),
+                                        TextInput::make('duration_minutes')
+                                            ->label('Duration (minutes)')
+                                            ->required()
+                                            ->numeric()
+                                            ->minValue(5)
+                                            ->suffix('min'),
+                                        MoneyInput::make('price'),
+                                    ])
+                                    ->columns(2),
+                                Section::make('Description')
+                                    ->description('Shown on the wellness menu and the treatment page.')
+                                    ->icon(Heroicon::OutlinedDocumentText)
+                                    ->schema([
+                                        TextInput::make('short_description')
+                                            ->label('Short description')
+                                            ->helperText('One line, shown in listings.')
+                                            ->columnSpanFull(),
+                                        Textarea::make('description')
+                                            ->label('Full description')
+                                            ->rows(4)
+                                            ->columnSpanFull(),
+                                    ]),
+                            ]),
+                        Group::make()
+                            ->columnSpan(['lg' => 1])
+                            ->schema([
+                                Section::make('Photo')
+                                    ->icon(Heroicon::OutlinedPhoto)
+                                    ->schema([
+                                        FileUpload::make('image_path')
+                                            ->label('')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->directory('treatments'),
+                                    ]),
+                                Section::make('Visibility')
+                                    ->icon(Heroicon::OutlinedEye)
+                                    ->schema([
+                                        Toggle::make('is_active')
+                                            ->label('Active')
+                                            ->helperText('Visible on the public wellness menu.')
+                                            ->default(true),
+                                        Toggle::make('is_featured')
+                                            ->label('Featured')
+                                            ->helperText('Highlighted on the homepage.'),
+                                        TextInput::make('sort_order')
+                                            ->label('Display order')
+                                            ->numeric()
+                                            ->default(0),
+                                    ]),
+                            ]),
+                    ]),
+            ]);
+    }
+}

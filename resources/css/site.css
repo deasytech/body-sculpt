@@ -1,0 +1,98 @@
+@import 'tailwindcss';
+
+@source '../views/site';
+@source '../views/components/site';
+@source '../views/livewire/site';
+
+@theme {
+    --font-serif: 'Marcellus', ui-serif, Georgia, serif;
+    --font-sans: 'Lato', ui-sans-serif, system-ui, sans-serif;
+
+    /* Warm Ivory / Cream — primary background */
+    --color-cream: #F7F3EC;
+    --color-cream-deep: #F3EEE5;
+
+    /* Deep Mocha / Chocolate Brown — primary brand color */
+    --color-mocha: #4A3329;
+    --color-mocha-deep: #3B2921;
+
+    /* Muted Sage Green — accent, used sparingly */
+    --color-sage: #9AA58C;
+    --color-sage-deep: #87947B;
+
+    /* Soft Beige / Sand — secondary background */
+    --color-sand: #EDE4D8;
+    --color-sand-deep: #DDD0BF;
+
+    /* Charcoal — body text */
+    --color-charcoal: #262421;
+}
+
+@layer base {
+    .site {
+        color: var(--color-charcoal);
+        background-color: var(--color-cream);
+        font-family: var(--font-sans);
+    }
+
+    .site h1,
+    .site h2,
+    .site h3,
+    .site .font-display {
+        font-family: var(--font-serif);
+        letter-spacing: 0.01em;
+    }
+
+    .site :focus-visible {
+        outline: 2px solid var(--color-mocha);
+        outline-offset: 2px;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-sm px-7 py-3.5 text-sm font-semibold tracking-wide uppercase transition-colors duration-300;
+        background-color: var(--color-mocha);
+        color: var(--color-cream);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--color-mocha-deep);
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-sm border px-7 py-3.5 text-sm font-semibold tracking-wide uppercase transition-colors duration-300;
+        border-color: var(--color-mocha);
+        color: var(--color-mocha);
+        background-color: transparent;
+    }
+
+    .btn-secondary:hover {
+        background-color: var(--color-mocha);
+        color: var(--color-cream);
+    }
+
+    .section-eyebrow {
+        @apply text-xs font-semibold tracking-[0.2em] uppercase;
+        color: var(--color-sage-deep);
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+
+    .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
