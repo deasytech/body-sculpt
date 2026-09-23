@@ -1,2 +1,14 @@
 *
 !.gitignore
+
+# Real, vetted project photography referenced by seeders and Setting
+# defaults — tracked so a fresh clone renders correctly out of the box.
+# (livewire-tmp/ stays ignored: transient upload staging only.)
+!treatments/
+!treatments/**
+!pilates-classes/
+!pilates-classes/**
+!products/
+!products/**
+!site/
+!site/**
